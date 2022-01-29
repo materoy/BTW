@@ -26,7 +26,7 @@ mount $root_disk /mnt
 
 mount $boot_disk /mnt/boot
 
-if [[ condition ]]; then
+if [[ $boot_disk ]]; then
   mkfs.ext4 $home_disk
   mount $home_disk /mnt/home
 fi
