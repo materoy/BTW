@@ -1,3 +1,2 @@
-# arch-base-install
-
-My arch linux install script
+# BTW
+My Arch installation scripts
