@@ -6,11 +6,20 @@ sed -i '177s/.//' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo "KEYMAP=us" >> /etc/vconsole.conf
-echo "arch" >> /etc/hostname
+
+# Hostname
+echo Enter hostname
+read hostname
+
+echo $hostname >> /etc/hostname
 echo "127.0.0.1 localhost" >> /etc/hosts
 echo "::1       localhost" >> /etc/hosts
-echo "127.0.1.1 arch.localdomain arch" >> /etc/hosts
-echo root:Dupontr0 | chpasswd
+echo "127.0.1.1 $hostname.localdomain $hostname" >> /etc/hosts
+
+echo Input root password
+read root_passwd
+
+echo root:$root_passwd | chpasswd
 
 # You can add xorg to the installation packages, I usually add it at the DE or WM install script
 # You can remove the tlp package if you are installing on a desktop or vm
@@ -35,11 +44,20 @@ systemctl enable libvirtd
 systemctl enable firewalld
 systemctl enable acpid
 
-useradd -m redview
-echo redview:Dupontr0 | chpasswd
-usermod -aG libvirt redview
 
-echo "redview ALL=(ALL) ALL" >> /etc/sudoers.d/redview
+# User related
+echo Enter username
+read username
+
+echo Enter password for $username
+read user_passwd
+
+useradd -m $username
+echo $username:$user_passwd | chpasswd
+
+usermod -aG libvirt $username
+
+echo "$username ALL=(ALL) ALL" >> /etc/sudoers.d/$username
 
 
 printf "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
