@@ -17,9 +17,8 @@ read home_disk
 echo Enter swap partition
 read swap_disk
 
+echo Erasing root disk ...
 mkfs.ext4 $root_disk
-
-mkswap $swap_partition
 
 # Mount disks
 mount $root_disk /mnt
@@ -31,8 +30,13 @@ if [[ $boot_disk ]]; then
   mount $home_disk /mnt/home
 fi
 
-swapon $swap_disk
+if [[ $swap_disk ]]; then
+  mkswap $swap_disk
+  swapon $swap_disk
+  
+fi
 
+# Base install
 pacstrap /mnt base linux linux-firmware
 
 
@@ -57,8 +61,10 @@ echo "127.0.0.1 localhost" >> /etc/hosts
 echo "::1       localhost" >> /etc/hosts
 echo "127.0.1.1 $hostname.localdomain $hostname" >> /etc/hosts
 
+mkinitcpio -P
+
 echo Input root password
-read root_passwd
+read -s root_passwd
 
 echo root:$root_passwd | chpasswd
 
@@ -91,7 +97,7 @@ echo Enter username
 read username
 
 echo Enter password for $username
-read user_passwd
+read -s user_passwd
 
 useradd -m $username
 echo $username:$user_passwd | chpasswd
