@@ -1,5 +1,46 @@
 #!/bin/bash
 
+timedatectl set-ntp true
+
+echo List of all disks
+lsblk
+
+echo Enter boot disk
+read boot_disk
+
+echo Enter root disk 
+read root_disk
+
+echo Enter home disk
+read home_disk
+
+echo Enter swap partition
+read swap_disk
+
+mkfs.ext4 $root_disk
+
+mkswap $swap_partition
+
+# Mount disks
+mount $root_disk /mnt
+
+mount $boot_disk /mnt/boot
+
+if [[ condition ]]; then
+  mkfs.ext4 $home_disk
+  mount $home_disk /mnt/home
+fi
+
+swapon $swap_disk
+
+pacstrap /mnt base linux linux-firmware
+
+
+genfstab -U /mnt >> /mnt/etc/fstab
+
+arch-choot /mnt
+
+
 ln -sf /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
 hwclock --systohc
 sed -i '177s/.//' /etc/locale.gen
