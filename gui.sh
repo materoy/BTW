@@ -9,18 +9,18 @@ sudo firewall-cmd --add-port=1025-65535/tcp --permanent
 sudo firewall-cmd --add-port=1025-65535/udp --permanent
 sudo firewall-cmd --reload
 
-git clone https://aur.archlinux.org/pikaur.git
-cd pikaur/
-makepkg -si --noconfirm
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
 cd ..
 
-pikaur -S --noconfirm system76-power
+yay -S --noconfirm system76-power
 sudo systemctl enable --now system76-power
 sudo system76-power graphics integrated
-pikaur -S --noconfirm auto-cpufreq
+yay -S --noconfirm auto-cpufreq
 sudo systemctl enable --now auto-cpufreq
 
-sudo pacman -S --noconfirm xorg sddma i3 vlc 
+sudo pacman -S --noconfirm xorg sddm 
 
 sudo systemctl enable sddm
 
