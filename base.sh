@@ -76,7 +76,7 @@ mkinitcpio -P
 echo Input root password
 read -s root_passwd
 
-echo root:$root_passwd | chpasswd
+printf "$root_passwd\n$root_passwd" | passwd
 
 # You can add xorg to the installation packages, I usually add it at the DE or WM install script
 # You can remove the tlp package if you are installing on a desktop or vm
@@ -115,7 +115,8 @@ echo Enter password for $username
 read -s user_passwd
 
 useradd -m $username
-echo $username:$user_passwd | chpasswd
+
+printf "$user_passwd\n$user_passwd" | passwd $username
 
 usermod -aG libvirt $username
 
