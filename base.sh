@@ -91,7 +91,7 @@ then
 fi
 
 
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Arch
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch
 grub-mkconfig -o /boot/grub/grub.cfg
 
 systemctl enable NetworkManager
@@ -123,3 +123,15 @@ echo "$username ALL=(ALL) ALL" >> /etc/sudoers.d/$username
 
 
 printf "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
+
+
+exit
+umount -R /mnt
+
+
+read -p "Would you gladly want to reboot ? " -n 1 -r
+echo  
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  reboot
+fi
