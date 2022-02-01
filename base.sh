@@ -5,13 +5,13 @@ timedatectl set-ntp true
 echo List of all disks
 lsblk
 
-echo Enter boot disk
+echo Enter BOOT disk
 read boot_disk
 
-echo Enter root disk 
+echo Enter ROOT disk 
 read root_disk
 
-echo Enter home disk
+echo Enter HOME disk
 read home_disk
 
 echo Enter swap partition
@@ -23,9 +23,11 @@ mkfs.ext4 $root_disk
 # Mount disks
 mount $root_disk /mnt
 
-mount $boot_disk /mnt/boot
-
 if [[ $boot_disk ]]; then
+  mount $boot_disk /mnt/boot
+fi
+
+if [[ $home_disk ]]; then
   mkfs.ext4 $home_disk
   mount $home_disk /mnt/home
 fi
@@ -43,7 +45,6 @@ pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
 
 arch-choot /mnt
-
 
 ln -sf /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
 hwclock --systohc
@@ -73,7 +74,13 @@ echo root:$root_passwd | chpasswd
 
 pacman -S --noconfirm grub efibootmgr networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils bluez bluez-utils cups hplip alsa-utils pipewire pipewire-alsa pipewire-pulse pipewire-jack bash-completion openssh rsync reflector acpi acpi_call tlp virt-manager qemu qemu-arch-extra edk2-ovmf bridge-utils dnsmasq vde2 openbsd-netcat iptables-nft ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font
 
-pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
+read -p "Install Nvidia shit ? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
+fi
+
 
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Arch
 grub-mkconfig -o /boot/grub/grub.cfg
