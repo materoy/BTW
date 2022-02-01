@@ -23,7 +23,16 @@ mkfs.ext4 $root_disk
 # Mount disks
 mount $root_disk /mnt
 
-if [[ $boot_disk ]]; then
+if [[ $boot_disk ]]; then    
+
+  read -p "Wipe boot partition?  " -n 1 -r
+  REPLY = "n"
+  echo 
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    mkfs.fat -F 32 $boot_disk
+  fi
+
   mount $boot_disk /mnt/boot
 fi
 
