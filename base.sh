@@ -94,7 +94,7 @@ fi
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch
 grub-mkconfig -o /boot/grub/grub.cfg
 
-systemctl enable NetworkManager
+systemctl enable NetworkManager.service
 systemctl enable bluetooth
 systemctl enable cups.service
 systemctl enable sshd
@@ -108,20 +108,25 @@ systemctl enable acpid
 
 
 # User related
-echo Enter username
-read username
+read -p "Add non root user ? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo Enter username
+    read username
 
-echo Enter password for $username
-read -s user_passwd
+    echo Enter password for $username
+    read -s user_passwd
 
-useradd -m $username
+    useradd -m $username
 
-printf "$user_passwd\n$user_passwd" | passwd $username
+    printf "$user_passwd\n$user_passwd" | passwd $username
 
-usermod -aG libvirt $username
+    usermod -aG libvirt $username
 
-echo "$username ALL=(ALL) ALL" >> /etc/sudoers.d/$username
+    echo "$username ALL=(ALL) ALL" >> /etc/sudoers.d/$username
 
+fi
 
 printf "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
 
